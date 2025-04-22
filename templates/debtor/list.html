@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+
+{% endblock css %}
+{% load templatetags %}
+{% block content %}
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+	<div class="d-flex flex-column flex-column-fluid">
+		<div id="kt_app_content" class="app-content flex-column-fluid">
+			<div id="kt_app_content_container" class="app-container container-xxl">
+				<div class="card mb-5 mb-xl-8">
+					<div class="card-header align-items-center py-5 gap-2 gap-md-5">
+						
+						<div class="col-sm-12 col-md-5 d-flex">
+							<h3 class="card-title align-items-start flex-column">
+								<span class="card-label fw-bold fs-3 mb-1">
+									Должники
+								</span>
+							</h3>
+							
+						</div>
+					</div><div class="card-body py-3">
+						<!--begin::Table container-->
+						<div class="table-responsive">
+							<!--begin::Table-->
+							<table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+								<!--begin::Table head-->
+								<thead>
+									<tr class="fw-bold text-muted">
+										
+										<th class="min-w-200px">Клиент</th>
+										<th class="min-w-150px">Заказ</th>
+										<th class="min-w-150px">Цена</th>
+										<th class="min-w-100px text-end">Действия</th>
+									</tr>
+								</thead>
+								<!--end::Table head-->
+								<!--begin::Table body-->
+								<tbody>
+									{% for debtor in debtors %}
+									<tr>
+										
+										<td>
+											<div class="d-flex align-items-center">
+												
+												<div class="d-flex justify-content-start flex-column">
+													<span class="text-dark fw-bold text-hover-primary fs-6">{{ debtor.client.firstname }} {{ debtor.client.lastname }}</span>
+													<span class="text-muted fw-semibold text-muted d-block fs-7">{{ debtor.client.company_name }} {{ debtor.client.inn }}</span>
+												</div>
+											</div>
+										</td>
+										<td>
+											<a href="{% url 'dashboard:order-view' order_id=debtor.order_id %}" class="text-dark fw-bold text-hover-primary d-block fs-6">№{{debtor.order_id}}</a>
+										</td>
+										<td class="text-end">
+											<div class="d-flex flex-column w-100 me-2">
+												<div class="d-flex flex-stack mb-2 ">
+													{{debtor.remaining_balance|price_format }} сум
+												</div>
+											</div>
+										</td>
+										<td>
+											<div class="d-flex justify-content-end flex-shrink-0">
+												<a href="{% url 'dashboard:order-view' order_id=debtor.order_id %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+													<i class="ki-duotone ki-eye fs-2 text-success">
+													<span class="path1"></span>
+													<span class="path2"></span>
+													<span class="path3"></span>
+													</i>
+												</a>
+											</div>
+										</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+								<!--end::Table body-->
+							</table>
+							<!--end::Table-->
+						</div>
+						<!--end::Table container-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}
+{% block javascript %}
+{% endblock javascript %}

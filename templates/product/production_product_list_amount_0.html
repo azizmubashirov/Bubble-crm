@@ -1,0 +1,428 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+
+{% endblock css %}
+{% block content %}
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+	<div class="d-flex flex-column flex-column-fluid">
+		<div id="kt_app_content" class="app-content flex-column-fluid">
+			<div id="kt_app_content_container" class="app-container container-xxl">
+				<div class="card mb-5 mb-xl-8">
+					<div class="card-header align-items-center py-5 gap-2 gap-md-5">
+						
+						<div class="col-sm-12 col-md-5 d-flex">
+							<h3 class="card-title align-items-start flex-column">
+								<span class="card-label fw-bold fs-3 mb-1">
+									{% if status == '2' %}
+									Новый продукт
+									{% else %}
+									Готовые продукты
+									{% endif %}
+								</span>
+							</h3>
+							
+						</div>
+						<div class="col-md-2 text-end" >
+							<select class="form-select form-select-sm  w-300px" onchange="this.form.submit()" name="category"  id="id_list_category">
+								<option value="0" {% if category == 0 %}selected{% endif %}>Категорий</option>
+								{% for cat in categories_list %}
+								<option value="{{cat.id}}" {% if cat.id == category %}selected{% endif %} >{{cat.name}}</option>
+								{% endfor %}
+							</select>
+						</div>
+						
+						<div class="card-toolbar">
+							
+							{% if not status == '2' %}
+								<form id="form-product" enctype="multipart/form-data" novalidate autocomplete="off" style="display: flex;">
+								<label style="margin-top: 7px; margin-right:10px" class="form-label"> Price </label>
+									<select class="form-select form-select-sm  w-100px" id="price_change">
+											<option value="A" {% if price_change == 'A' %}selected {% endif %}>A</option>
+											<option value="B" {% if price_change == 'B' %} selected {% endif %}>B</option>
+											<option value="C" {% if price_change == 'C' %} selected {% endif %}>C</option>
+									</select>
+								
+							</form>
+							{% endif %}
+							
+						</div>
+						
+					</div>
+					
+					<div class="card-body py-3">
+						<div class="table-responsive">
+							<table class="table align-middle gs-0 gy-4">
+								<thead>
+									<tr class="fw-bold text-muted bg-light">
+										
+											<th class="ps-4 min-w-50px rounded-start">Номер</th>
+											<th class="ps-4 min-w-150px rounded-start">Название</th>
+											<th class="ps-4 min-w-100px rounded-start">Категория</th>
+											<th class="ps-4 min-w-100px rounded-start">Кол-во</th>
+											<th class="ps-4 min-w-100px rounded-start">Цена</th>
+											<th class="ps-4 min-w-60px rounded-start">Картинка</th>
+											<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for product in products %}
+                                    {% if product.accepted == 1 %}
+									<tr>
+                                    {% elif product.accepted == 2 %}
+                                    <tr style="background-color: #adec97;">
+                                    {% elif product.accepted == 3 %}
+                                    <tr style="background-color: #ff8383">
+                                    {% endif %}
+										<td class="ps-5">
+											<a href="#" class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{product.id}} {{product.accepted }}</a>
+										</td>
+										<td>
+											<a  class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{product.production_product.name}}</a>
+										</td>
+										<td>
+											<a class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{product.production_product.category.name}}</a>
+										</td><td>
+											<a  class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{product.amount}} м²</a>
+										</td><td>
+											{% if price_change == 'A' %}
+											<a  class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{product.production_product.price.A }} $</a>
+											{% elif price_change == 'B' %}
+											<a  class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{product.production_product.price.B }} $</a>
+											{% elif price_change == 'C' %}
+											<a  class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{product.production_product.price.C }} $</a>
+											{% endif %}
+										</td>
+										<td>
+											<div class="symbol symbol-50px me-5">
+												{% if product.production_product_images and product.production_product_images.0 %}
+												 <img src="{{product.production_product_images.0}}" class="" alt="" />
+												{% else %}
+												 ---
+												{% endif %}
+											</div>
+										</td>
+										<td class="text-end">
+											{% if not role == 'agent' %}
+                                            {% if product.accepted == 1 %}
+                                            <a href="{% url 'dashboard:production-product-accepted' pk=product.id %}" class="btn btn-primary hover-elevate-up" id="btn-primary">Принятие</a>
+                                            <a href="{% url 'dashboard:production-product-cancel' pk=product.id %}" class="btn btn-danger hover-elevate-up" id="btn-danger">Отмена</a>
+                                            {% elif product.accepted == 2 %}
+                                            
+                                            <a  class="btn btn-light add-price" data-target-modal="modal-{{ product.production_product_id }}" style="margin-right: 25px;">
+                                                <i class="ki-duotone ki-pencil fs-2">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                </i> Добавить цену
+                                            </a>
+                                            {% elif product.accepted == 3 %}
+                                            {% endif %}
+											{% endif %}
+											<div class="modal fade" id="modal-{{ product.production_product_id }}" tabindex="-1" role="dialog" aria-labelledby="popup-title">
+													<div class="modal-dialog" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="popup-title">Изменить цену продукта</h5>
+																<button type="button" class="close" onclick="closeModal('{{ product.production_product_id }}')">
+																	<span aria-hidden="true">&times;</span>
+																</button>
+															</div>
+															<div class="modal-body">
+																<form id="add-price-form-{{ product.production_product_id }}" method="post">
+																	{% csrf_token %}
+																		<div class="form-group">
+																			<select name="currency" class="form-control" style="width: 20%;">
+																					{% for currency in currencies %}
+																						<option value="{{ currency.id }}">{{ currency.name }}</option>
+																					{% endfor %}
+																			</select>
+																		</div>
+																		<div style="display: flex; align-items: center;margin-top: 25px;" class="form-group">
+																			<label for="price_a" style="flex: 1;">A - Цена:</label>
+																			<input class="form-control" type="number" id="price_a" name="price_a" value="{{product.production_product.price.A}}" style="flex: 4; width: 70%;" required>
+																			<input class="form-control" type="number" id="percentage_a" name="percentage_a" value="{{product.production_product.price.percentage_A}}" style="flex: 1; width: 20%; margin-left: 30px;"  placeholder="%" required>
+																		</div>
+
+																		<div style="display: flex; align-items: center;margin-top: 15px;" class="form-group">
+																			<label for="price_b" style="flex: 1;">B - Цена:</label>
+																			<input class="form-control" type="number" id="price_b" name="price_b" value="{{product.production_product.price.B}}" style="flex: 4; width: 70%;" required>
+																			<input class="form-control" type="number" id="percentage_b" name="percentage_b" value="{{product.production_product.price.percentage_B}}" style="flex: 1; width: 20%; margin-left: 30px;" placeholder="%" required>
+																		</div>
+
+																		<div style="display: flex; align-items: center;margin-top: 15px;" class="form-group">
+																			<label for="price_c" style="flex: 1;">C - Цена:</label>
+																			<input class="form-control" type="number" id="price_c" name="price_c" value="{{product.production_product.price.C}}" style="flex: 4; width: 70%;" required>
+																			<input class="form-control" type="number" id="percentage_c" name="percentage_c" value="{{product.production_product.price.percentage_C}}" style="flex: 1; width: 20%; margin-left: 30px;" placeholder="%" required>
+																		</div>
+																		<div style="display: flex; align-items: center;margin-top: 15px;" class="form-group">
+																			<label for="price_c" style="flex: 1;">Cбистоимисть: </label>
+																			<input class="form-control" type="number" id="cost" name="cost" value="{{product.cost}}" style="flex: 4; width: 70%;" required>
+																		</div>
+																</form>
+															</div>
+															<div class="modal-footer">
+																<button type="button" class="btn btn-danger" onclick="closeModal('{{ product.production_product_id }}')">Закрыть</button>
+																<button type="button" class="btn btn-primary save-button" data-product-id="{{product.production_product_id}}" data-production-product-id="{{product.id}}">Сохранить</button>
+															</div>
+														</div>
+													</div>
+												</div>
+										</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+								<!--end::Table body-->
+							</table>
+							<!--end::Table-->
+						</div>
+						<!--end::Table container-->
+					</div>
+					<div class="row dataTables_wrapper dt-bootstrap4 no-footer" style="border-top: var(--bs-card-border-width) solid var(--bs-card-border-color);padding: 1em 0em;">
+						<div class="col-sm-12 col-md-12 d-flex justify-content-md-end">
+							<div class="dataTables_paginate paging_simple_numbers" id="kt_ecommerce_sales_table_paginate">
+								<ul class="pagination" id="id_pagination" style="justify-content: end;">
+									<li class="page-item {% if not products.has_previous %}disabled{% endif %}">
+										<a class="page-link with-prev-row" href="" data-action="{% if products.has_previous %}?page={{ products.previous_page_number }}{% endif %}">
+											<i class="previous"></i>
+										</a>
+									</li>
+									{% for i in products.paginator.page_range %}
+										{% if products.number == i %}
+											<li class="page-item active">
+												<a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+											</li>
+										{% elif products.number == values.paginator.num_pages and values.number|add:"-2" == i%}
+											<li class="page-item">
+												<a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+											</li>
+										{% elif products.number == 1 and products.number|add:"2" == i %}
+											<li class="page-item">
+												<a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+											</li>
+										{% elif products.number|add:"1" == i or products.number|add:"-1" == i %}
+											<li class="page-item">
+												<a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+											</li>
+										{% endif %}
+									{% endfor %}
+									<li class="page-item {% if not products.has_next %}disabled{% endif %}">
+										<a class="page-link with-next-row" href="" data-action="{% if products.has_next %}?page={{ products.next_page_number }}{% endif %}">
+											<i class="next"></i>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!--begin::Body-->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}
+{% block javascript %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    $(".add-price").click(function () {
+        var targetModalId = $(this).data("target-modal");
+        $("#" + targetModalId).modal("show");
+    });
+});
+</script>
+<script>
+function closeModal(productId) {
+    var modalId = "modal-" + productId;
+    $("#" + modalId).modal("hide");
+}
+</script>
+<script>
+$(document).ready(function () {
+
+	function submitForm(productId, production_id) {
+    	var csrftoken = getCookie('csrftoken');
+
+    	var requestData = {
+			productId: productId,
+			production_id: production_id,
+			formData: $("#add-price-form-" + productId).serialize()
+    	};
+
+    	requestData['csrfmiddlewaretoken'] = csrftoken;
+
+        $.ajax({
+            url: "{% url 'dashboard:add-price-product' %}",
+            method: "POST",
+            data: requestData,
+            dataType: "json",
+            success: function (data) {
+                if (data.success) {
+                    var modalId = "modal-" + productId;
+					$("#" + modalId).modal("hide");
+					window.location.reload();
+                } else {
+                    $("#error-messages").html(data.errors);
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+	function getCookie(name) {
+		var cookieValue = null;
+		if (document.cookie && document.cookie !== '') {
+			var cookies = document.cookie.split(';');
+			for (var i = 0; i < cookies.length; i++) {
+				var cookie = $.trim(cookies[i]);
+				if (cookie.substring(0, name.length + 1) === (name + '=')) {
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
+	}
+
+	$(".save-button").click(function () {
+    	var productId = $(this).data('product-id');
+    	var production_id = $(this).data('production-product-id');
+        submitForm(productId, production_id);
+    });
+
+    $("#add-product-form").on("keydown", function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            submitForm();
+        }
+    });
+});
+</script>
+<script>
+    function filterPage(addToPage){
+        // var entries = $("#id_list_entries option:selected").val();
+        var category = $("#id_list_category option:selected").val();
+        var price_change = $("#price_change option:selected").val();
+        var page = parseInt($("li.page-item.active a.page-link").html()) + addToPage;
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        urlParams.set('entries', 25);
+        urlParams.set('page', page);
+        urlParams.set('category', category);
+        urlParams.set('price_change', price_change);
+
+        window.location.search = urlParams;
+    }
+    $("#id_list_entries").change(function(){
+        filterPage(-parseInt($("li.page-item.active a.page-link").html()) + 1);
+    });
+    $("#id_list_category").change(function(){
+        filterPage(-parseInt($("li.page-item.active a.page-link").html()) + 1);
+    });
+    $("#price_change").change(function(){
+        filterPage(-parseInt($("li.page-item.active a.page-link").html()) + 1);
+    });
+    $("a.page-link.page-number").click(function(e){
+        e.preventDefault();
+        var page = parseInt($(this).html());
+        if (parseInt($("li.page-item.active a.page-link").html()) != page){
+            filterPage(page - parseInt($("li.page-item.active a.page-link").html()));
+        }
+    });
+    $("a.page-link.with-next-row").click(function(e){
+        e.preventDefault();
+        filterPage(1);
+    });
+    $("a.page-link.with-prev-row").click(function(e){
+        e.preventDefault();
+        filterPage(-1);
+    });
+</script>
+<script>
+    $("#btn-primary").click(function(e){
+        var url = $(this).attr('href');
+        e.preventDefault();
+        Swal.fire(
+            {
+            title:"Принятие",
+            text:"Хотели бы вы получить этот товар?",
+            icon:"info",
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: "Да",
+            cancelButtonText: 'Нет',
+            customClass: {
+                confirmButton: "btn btn-primary",
+                cancelButton: 'btn btn-danger'
+            }
+            }
+        ).then(function(result){
+            if (result.value) {
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Сохранено!",
+                            text: "Информация сохранена!",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        setTimeout(function() { window.location.reload(); }, 1500);
+                    },
+                    error: function (error) {
+                        Swal.fire('Упс...',
+                        'Заполните информацию',
+                        'error')
+                    }
+                })
+            }
+        })
+    });
+    $("#btn-danger").click(function(e){
+        var url = $(this).attr('href');
+        e.preventDefault();
+        Swal.fire(
+            {
+            title:"Отмена",
+            text:"Отменить этот продукт?",
+            icon:"warning",
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: "Да",
+            cancelButtonText: 'Нет',
+            customClass: {
+                confirmButton: "btn btn-primary",
+                cancelButton: 'btn btn-danger'
+            }
+            }
+        ).then(function(result){
+            if (result.value) {
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Сохранено!",
+                            text: "Информация сохранена!",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        setTimeout(function() { window.location.reload(); }, 1500);
+                    },
+                    error: function (error) {
+                        Swal.fire('Упс...',
+                        'Заполните информацию',
+                        'error')
+                    }
+                })
+            }
+        })
+    });
+</script>
+{% endblock javascript %}

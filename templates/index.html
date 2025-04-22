@@ -1,0 +1,481 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+	<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+		
+		<div class="post d-flex flex-column-fluid" id="kt_post">
+			<!--begin::Container-->
+			<div id="kt_content_container" class="container-xxl">
+				<!--begin::Row-->
+				<div class="row g-5 g-xl-8">
+					<div class="col-xl-3">
+						<!--begin::Statistics Widget 5-->
+						<span class="card hoverable card-xl-stretch mb-5 mb-xl-8 fw-bold" style="background-color: #F7D9E3">
+							<!--begin::Body-->
+							<div class="card-body">
+								<i class="ki-duotone ki-chart-pie-simple text-dark fs-2x ms-n1">
+									<span class="path1"></span>
+									<span class="path2"></span>
+								</i>
+								<div class="fw-bold fs-2 mb-2 mt-5 ">{{today_total_price}} сум</div>
+								<div class="fw-semibold">Сегодняшняя распродажа</div>
+							</div>
+							<!--end::Body-->
+						</span>
+						<!--end::Statistics Widget 5-->
+					</div>
+					<div class="col-xl-3">
+						<!--begin::Statistics Widget 5-->
+						<span class="card bg-dark hoverable card-xl-stretch mb-xl-8">
+							<!--begin::Body-->
+							<div class="card-body">
+								<i class="ki-duotone ki-cheque text-gray-100 fs-2x ms-n1">
+									<span class="path1"></span>
+									<span class="path2"></span>
+									<span class="path3"></span>
+									<span class="path4"></span>
+									<span class="path5"></span>
+									<span class="path6"></span>
+									<span class="path7"></span>
+								</i>
+								<div class="text-gray-100 fw-bold fs-2 mb-2 mt-5">{{today_order}} ta</div>
+								<div class="fw-semibold text-gray-100">сегодняшние заказы</div>
+							</div>
+							<!--end::Body-->
+						</span>
+						<!--end::Statistics Widget 5-->
+					</div>
+					<div class="col-xl-3">
+						<!--begin::Statistics Widget 5-->
+						<span class="card bg-body hoverable card-xl-stretch mb-xl-8">
+							<!--begin::Body-->
+							<div class="card-body">
+								<i class="ki-duotone ki-chart-simple text-primary fs-2x ms-n1">
+									<span class="path1"></span>
+									<span class="path2"></span>
+									<span class="path3"></span>
+									<span class="path4"></span>
+								</i>
+								<div class="text-gray-900 fw-bold fs-2 mb-2 mt-5"> {{income_price.price}} $</div>
+								<div class="fw-semibold text-gray-400">Сегодняшняя прибыль</div>
+							</div>
+							<!--end::Body-->
+						</a>
+						<!--end::Statistics Widget 5-->
+					</div>
+					
+					<div class="col-xl-3">
+						<!--begin::Statistics Widget 5-->
+						<span class="card bg-warning hoverable card-xl-stretch mb-xl-8">
+							<!--begin::Body-->
+							<div class="card-body">
+								<i class="ki-duotone ki-briefcase text-white fs-2x ms-n1">
+									<span class="path1"></span>
+									<span class="path2"></span>
+								</i>
+								<div class="text-white fw-bold fs-2 mb-2 mt-5">{{debtors_count.count}} ta</div>
+								<div class="fw-semibold text-white">Количество должников </div>
+							</div>
+							<!--end::Body-->
+						</span>
+						<!--end::Statistics Widget 5-->
+					</div>
+					
+				</div>
+				<div class="row g-5 g-xl-8">
+					<div class="col-xl-6">
+						<!--begin::Charts Widget 1-->
+						<div class="card card-xl-stretch mb-xl-8">
+							<!--begin::Header-->
+							<div class="card-header border-0 pt-5">
+								<!--begin::Title-->
+								<h3 class="card-title align-items-start flex-column">
+									<span class="card-label fw-bold fs-3 mb-1">Заказы</span>
+									<span class="text-muted fw-semibold fs-7">последние заказы</span>
+								</h3>
+							</div>
+							<!--end::Header-->
+							<!--begin::Body-->
+								<div class="card-body">
+									<div id="kt_apexcharts_1" style="height: 350px;"></div>
+								</div>
+							<!--end::Body-->
+						</div>
+						<!--end::Charts Widget 1-->
+					</div>
+					<div class="col-xl-6">
+						<!--begin::Charts Widget 2-->
+						<div class="card card-xl-stretch mb-5 mb-xl-8">
+							<!--begin::Header-->
+							<div class="card-header border-0 pt-5">
+								<h3 class="card-title align-items-start flex-column">
+									<span class="card-label fw-bold fs-3 mb-1">Торговля</span>
+									<span class="text-muted fw-semibold fs-7"> статистика</span>
+								</h3>
+							</div>
+							<!--end::Header-->
+							<!--begin::Body-->
+							<div class="card-body">
+								<!--begin::Chart-->
+								<div id="kt_charts_widget_2_char" style="height: 350px"></div>
+								<!--end::Chart-->
+							</div>
+							<!--end::Body-->
+						</div>
+						<!--end::Charts Widget 2-->
+					</div>
+				</div>
+				<div class="card mb-5 mb-xl-8">
+					<!--begin::Header-->
+					<div class="card-header border-0 pt-5">
+						<h3 class="card-title align-items-start flex-column">
+							<span class="card-label fw-bold fs-3 mb-1">Должники</span>
+						</h3>
+						
+					</div>
+					<!--end::Header-->
+					<!--begin::Body-->
+					<div class="card-body py-3">
+						<!--begin::Table container-->
+						<div class="table-responsive">
+							<!--begin::Table-->
+							<table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+								<!--begin::Table head-->
+								<thead>
+									<tr class="fw-bold text-muted">
+										
+										<th class="min-w-200px">Клиент</th>
+										<th class="min-w-150px">Заказ</th>
+										<th class="min-w-150px">цена</th>
+										<th class="min-w-100px text-end">Действия</th>
+									</tr>
+								</thead>
+								<!--end::Table head-->
+								<!--begin::Table body-->
+								<tbody>
+									{% for debtor in debtors %}
+									<tr>
+										
+										<td>
+											<div class="d-flex align-items-center">
+												
+												<div class="d-flex justify-content-start flex-column">
+													<span class="text-dark fw-bold text-hover-primary fs-6">{{ debtor.client.firstname }} {{ debtor.client.lastname }}</span>
+													<span class="text-muted fw-semibold text-muted d-block fs-7">{{ debtor.client.company_name }} {{ debtor.client.inn }}</span>
+												</div>
+											</div>
+										</td>
+										<td>
+											<a href="{% url 'dashboard:order-view' order_id=debtor.order_id %}" class="text-dark fw-bold text-hover-primary d-block fs-6">№{{debtor.order_id}}</a>
+										</td>
+										<td class="text-end">
+											<div class="d-flex flex-column w-100 me-2">
+												<div class="d-flex flex-stack mb-2">
+													<span class="badge badge-light-danger">{{debtor.remaining_balance}} $</span>
+												</div>
+											</div>
+										</td>
+										<td>
+											<div class="d-flex justify-content-end flex-shrink-0">
+												<a href="{% url 'dashboard:order-view' order_id=debtor.order_id %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+													<i class="ki-duotone ki-eye fs-2 text-success">
+													<span class="path1"></span>
+													<span class="path2"></span>
+													<span class="path3"></span>
+													</i>
+												</a>
+											</div>
+										</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+								<!--end::Table body-->
+							</table>
+							<!--end::Table-->
+						</div>
+						<!--end::Table container-->
+					</div>
+					<!--begin::Body-->
+				</div>
+			</div>
+			<!--end::Container-->
+		</div>
+	</div>
+{% endblock content %}
+{% block javascript %}
+<script>
+	var element = document.getElementById("kt_apexcharts_1");
+	var chart = {
+		self: null,
+		rendered: false
+	};
+	var initChart = function() {
+		var height = parseInt(KTUtil.css(element, 'height'));
+		var labelColor = KTUtil.getCssVariableValue('--bs-gray-500');
+		var borderColor = KTUtil.getCssVariableValue('--bs-gray-200');
+		var baseColor = KTUtil.getCssVariableValue('--bs-warning');
+		var secondaryColor = KTUtil.getCssVariableValue('--bs-gray-300');
+		let last_5_months = {{ last_5_months|safe }};
+		let labels = [];
+		let values = [];
+
+		for (let i = 0; i < last_5_months.length; i++) {
+			labels.push(last_5_months[i].month);
+			values.push(last_5_months[i].total_orders);
+		}
+		var options = {
+			series: [{
+				name: 'Soni',
+				data: values
+			}],
+			chart: {
+				fontFamily: 'inherit',
+				type: 'bar',
+				height: height,
+				toolbar: {
+					show: false
+				}
+			},
+			plotOptions: {
+				bar: {
+					horizontal: false,
+					columnWidth: ['30%'],
+					borderRadius: 4
+				},
+			},
+			legend: {
+				show: false
+			},
+			dataLabels: {
+				enabled: false
+			},
+			stroke: {
+				show: true,
+				width: 2,
+				colors: ['transparent']
+			},
+			xaxis: {
+				categories: labels,
+				axisBorder: {
+					show: false,
+				},
+				axisTicks: {
+					show: false
+				},
+				labels: {
+					style: {
+						colors: labelColor,
+						fontSize: '12px'
+					}
+				}
+			},
+			yaxis: {
+				labels: {
+					style: {
+						colors: labelColor,
+						fontSize: '12px'
+					}
+				}
+			},
+			fill: {
+				opacity: 1
+			},
+			states: {
+				normal: {
+					filter: {
+						type: 'none',
+						value: 0
+					}
+				},
+				hover: {
+					filter: {
+						type: 'none',
+						value: 0
+					}
+				},
+				active: {
+					allowMultipleDataPointsSelection: false,
+					filter: {
+						type: 'none',
+						value: 0
+					}
+				}
+			},
+			tooltip: {
+				style: {
+					fontSize: '12px'
+				},
+				y: {
+					formatter: function (val) {
+						return val + " количество"
+					}
+				}
+			},
+			colors: [baseColor],
+			grid: {
+				borderColor: borderColor,
+				strokeDashArray: 4,
+				yaxis: {
+					lines: {
+						show: true
+					}
+				}
+			}
+		};
+
+		chart.self = new ApexCharts(element, options);
+		chart.self.render();   
+		chart.rendered = true;
+	}
+
+	
+	var initChart2 = function() {
+		var element = document.getElementById("kt_charts_widget_2_char");
+		var chart = {
+			self: null,
+			rendered: false
+		};
+		var height = parseInt(KTUtil.css(element, 'height'));
+		var labelColor = KTUtil.getCssVariableValue('--kt-gray-500');
+		var borderColor = KTUtil.getCssVariableValue('--bs-gray-200');
+		var baseColor = KTUtil.getCssVariableValue('--bs-success');
+		let last_5_months = {{ last_5_months|safe }};
+		let labels = [];
+		let values = [];
+
+		for (let i = 0; i < last_5_months.length; i++) {
+			labels.push(last_5_months[i].month);
+			values.push(last_5_months[i].total_price);
+		}
+		var options = {
+			series: [{
+				name: 'цена',
+				data: values
+			}],
+			chart: {
+				fontFamily: 'inherit',
+				type: 'bar',
+				height: height,
+				toolbar: {
+					show: false
+				}
+			},
+			plotOptions: {
+				bar: {
+					horizontal: false,
+					columnWidth: ['30%'],
+					borderRadius: 4
+				},
+			},
+			legend: {
+				show: false
+			},
+			dataLabels: {
+				enabled: false
+			},
+			stroke: {
+				show: true,
+				width: 2,
+				colors: ['transparent']
+			},
+			xaxis: {
+				categories: labels,
+				axisBorder: {
+					show: false,
+				},
+				axisTicks: {
+					show: false
+				},
+				labels: {
+					style: {
+						colors: labelColor,
+						fontSize: '12px'
+					}
+				}
+			},
+			yaxis: {
+				labels: {
+					style: {
+						colors: labelColor,
+						fontSize: '12px'
+					}
+				}
+			},
+			fill: {
+				opacity: 1
+			},
+			states: {
+				normal: {
+					filter: {
+						type: 'none',
+						value: 0
+					}
+				},
+				hover: {
+					filter: {
+						type: 'none',
+						value: 0
+					}
+				},
+				active: {
+					allowMultipleDataPointsSelection: false,
+					filter: {
+						type: 'none',
+						value: 0
+					}
+				}
+			},
+			tooltip: {
+				style: {
+					fontSize: '12px'
+				},
+				y: {
+					formatter: function (val) {
+						return val + " $"
+					}
+				}
+			},
+			colors: [baseColor],
+			grid: {
+				borderColor: borderColor,
+				strokeDashArray: 4,
+				yaxis: {
+					lines: {
+						show: true
+					}
+				}
+			}
+		};
+
+		chart.self = new ApexCharts(element, options);
+		chart.self.render();   
+		chart.rendered = true;
+	}
+
+	// Init chart
+	initChart();
+	initChart2();
+	KTThemeMode.on("kt.thememode.change", function() {                
+		if (chart.rendered) {
+			chart.self.destroy();
+		}
+
+		initChart();
+	});
+		
+	function LastMonth() {
+		const month_name = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		const now_date = new Date();
+		const last_month_name = [];
+
+		for (let i = 0; i < 6; i++) {
+			const month_Index = (now_date.getMonth() - i + 12) % 12;
+			last_month_name.push(month_name[month_Index]);
+		}
+
+		return last_month_name.reverse();
+	};
+</script>
+{% endblock javascript %}

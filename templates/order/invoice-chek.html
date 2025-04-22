@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+{% load static %}
+{% load templatetags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <link rel="shortcut icon" href="{% static 'media/logos/favicon.ico'%}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+    <link href="{% static 'plugins/custom/fullcalendar/fullcalendar.bundle.css'%}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'plugins/custom/datatables/datatables.bundle.css'%}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'plugins/global/plugins.bundle.css'%}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/style.bundle.css'%}" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <style>
+        #qrcode {
+        width: 100px;
+        height: 100px;
+        }
+        .qrcode img{
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(67, 67, 68, 0.25);
+            padding: 4px;
+            width: 100px;
+            height: 100px;
+            }
+        .qrcode{
+            padding: 16px;
+            margin-bottom: 30px;
+            }
+        #qrcode-container{
+            display:none;
+        }
+    </style>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    
+</head>
+<body>
+    <div class="app-main flex-column flex-row-fluid" id="kt_app_main" style="">
+        <!--begin::Content wrapper-->
+        <div class="d-flex flex-column flex-column-fluid">
+            <div id="kt_app_content" class="app-content flex-column-fluid">
+                <!--begin::Content container-->
+                <div id="kt_app_content_container" class="app-container container-xxl">
+                    <!-- begin::Invoice 1-->
+                    <div class="card">
+                        <!-- begin::Body-->
+                        <div class="card-body py-20">
+                            <!-- begin::Wrapper-->
+                            <div class="mw-lg-950px mx-auto w-100">
+                                <!-- begin::Header-->
+                                <div class="d-flex justify-content-between flex-column flex-sm-row mb-19">
+                                    <h4 class="fw-bolder text-gray-800 fs-2qx pe-5 pb-7">СЧЕТ</h4>
+                                    <!--end::Logo-->
+                                    <div class="text-sm-end">
+                                        <!--begin::Logo-->
+                                        <a href="#">
+                                            <img alt="Logo" src="/static/media/svg/brand-logos/duolingo.svg" />
+                                        </a>
+                                        <!--end::Logo-->
+                                        <!--begin::Text-->
+                                        <div class="text-sm-end fw-semibold fs-4 text-muted mt-7">
+                                            <div>Cecilia Chapman, 711-2880 Nulla St, Mankato</div>
+                                            <div>Mississippi 96522</div>
+                                        </div>
+                                        <!--end::Text-->
+                                    </div>
+                                </div>
+                                <!--end::Header-->
+                                <!--begin::Body-->
+                                <div class="border-bottom pb-12">
+                                    <!--begin::Image-->
+                                    <div class="d-flex flex-row-fluid bgi-no-repeat bgi-position-x-center bgi-size-cover card-rounded h-150px h-lg-250px mb-lg-20" style="background-image: url(/static/media/misc/pattern-4.jpg)"></div>
+                                    <!--end::Image-->
+                                    <!--begin::Wrapper-->
+                                    <div class="d-flex justify-content-between flex-column flex-md-row">
+                                        <!--begin::Content-->
+                                        <div class="flex-grow-1 pt-8 mb-13">
+                                            <!--begin::Table-->
+                                            <div class="table-responsive border-bottom mb-14">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr class="border-bottom fs-6 fw-bold text-muted text-uppercase">
+                                                            <th class="min-w-165px pb-9">Продукт</th>
+                                                            <th class="min-w-70px pb-9 text-end">кол-во</th>
+                                                            <th class="min-w-80px pb-9 text-end">Цена</th>
+                                                            <th class="min-w-100px pe-lg-6 pb-9 text-end">Общая сумма </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for product in order_item %}
+                                                        <tr class="fw-bold text-gray-700 fs-5 text-end">
+                                                            <td class="text-start align-items-center">{{product.product.production_product.name}} <br>
+                                                                <span class="text-muted fw-semibold d-block fs-7">{{product.product.category.name}}</span>
+                                                            </td>
+                                                            
+                                                            <td class="">{{product.amount}} м²</td>
+                                                            <td class=""> 
+                                                            {% if model.price_type == 'A' %}
+                                                                {{product.product.production_product.price.A}}
+                                                            {% elif model.price_type == 'B' %}
+                                                                {{product.product.production_product.price.B}}
+                                                            {% elif model.price_type == 'C' %}
+                                                                {{product.product.production_product.price.C}}
+                                                            {% endif %}$</td>
+                                                            <td class=" fs-5 pe-lg-6 text-dark fw-bolder">{% if model.price_type == 'A' %}
+                                                                {% total_product_price product.product.production_product.price.A product.amount %}
+                                                            {% elif model.price_type == 'B' %}
+                                                                {% total_product_price product.product.production_product..price.B product.amount %}
+                                                            {% elif model.price_type == 'C' %}
+                                                                {% total_product_price product.product.production_product.price.C product.amount %}
+                                                            {% endif %}сум</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                        <tr class="text-end">
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td>Скидка({{model.discount}}%)</td>
+                                                            <td class="fs-5 pe-lg-6 text-dark fw-bolder"> 
+                                                                {% if model.discount == 0 %}
+                                                                    0 сум
+                                                                {% else %}
+                                                                    {% discount_price order_item model.price_type model.discount %}
+                                                                {% endif %}сум
+                                                        </td>
+                                                        </tr>
+                                                        <tr class="text-end">
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td>НДС 12%</td>
+                                                            <td class="fs-5 pe-lg-6 text-dark fw-bolder">{{model.qqs_price|price_format}} сум </td>
+                                                        </tr>
+                                                        <tr class="text-end">
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td>Стоимость доставки</td>
+                                                            <td class="fs-5 pe-lg-6 text-dark fw-bolder"> {{model.delivery_price}} сум </td>
+                                                        </tr>
+                                                        
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!--end::Table-->
+                                            <!--begin::Section-->
+                                            <div class="d-flex">
+                                                <div class="d-flex flex-column mw-md-300px w-100">
+                                                    <!--begin::Label-->
+                                                    <div class="fw-semibold fs-5 mb-3 text-dark00">Клиент</div>
+                                                    <!--end::Label-->
+                                                    <!--begin::Item-->
+                                                    <div class="d-flex flex-stack text-gray-800 mb-3 fs-6">
+                                                        <!--begin::Accountname-->
+                                                        <div class="fw-semibold pe-5">Ф.И.О:</div>
+                                                        <!--end::Accountname-->
+                                                        <!--begin::Label-->
+                                                        <div class="text-end fw-norma">{{model.client.firstname}} {{model.client.lastname}}</div>
+                                                        <!--end::Label-->
+                                                    </div>
+                                                    <!--end::Item-->
+                                                    <!--begin::Item-->
+                                                    <div class="d-flex flex-stack text-gray-800 mb-3 fs-6">
+                                                        <!--begin::Accountnumber-->
+                                                        <div class="fw-semibold pe-5">Название компании:</div>
+                                                        <!--end::Accountnumber-->
+                                                        <!--begin::Number-->
+                                                        <div class="text-end fw-norma">{{model.client.company_name}} {{model.client.inn}}</div>
+                                                        <!--end::Number-->
+                                                    </div>
+                                                    <!--end::Item-->
+                                                    <!--begin::Item-->
+                                                    <div class="d-flex flex-stack text-gray-800 fs-6">
+                                                        <!--begin::Code-->
+                                                        <div class="fw-semibold pe-5">Дата:</div>
+                                                        <!--end::Code-->
+                                                        <!--begin::Label-->
+                                                        <div class="text-end fw-norma">{{model.created_at|date:'d-m-Y'}}</div>
+                                                        <!--end::Label-->
+                                                    </div>
+                                                    <!--end::Item-->
+                                                </div>
+                                                
+                                            </div>
+                                            
+                                            <!--end::Section-->
+                                        </div>
+                                        <!--end::Content-->
+                                        <!--begin::Separator-->
+                                        <div class="border-end d-none d-md-block mh-450px mx-9"></div>
+                                        <!--end::Separator-->
+                                        <!--begin::Content-->
+                                        <div class="text-end pt-10">
+                                            <!--begin::Total Amount-->
+                                            <div class="fs-3 fw-bold text-muted mb-3">ОБЩАЯ СУММА</div>
+                                            <div class="fs-xl-2x fs-2 fw-bolder">{% total model.price model.discount model.delivery_price %} сум</div>
+                                            <!--end::Total Amount-->
+                                           
+                                        </div>
+                                        <!--end::Content-->
+                                        
+                                    </div>
+                                    <!--end::Wrapper-->
+                                    
+                                    <div class="text-sm-end fw-semibold fs-4 text-muted mt-7">
+
+                                        <span>{{model.client.firstname}} {{model.client.lastname}}:</span>
+                                        <img src="{{model.signature}}" alt="" class="text-sm-end">
+                                        
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <!-- end::Wrapper-->
+                        </div>
+                        <!-- end::Body-->
+                    </div>
+                    <!-- end::Invoice 1-->
+                </div>
+                <!--end::Content container-->
+            </div>
+            <!--end::Content-->
+        </div>
+    
+    </div>
+    
+    <script>
+        function CopyLinkFunction() {
+    
+        // Copy the text inside the text field
+        navigator.clipboard.writeText(window.location.origin +`{% url 'dashboard:order-invoice-chek' order_id=model.id %}`);
+    }
+    
+    
+    let website = window.location.origin +`{% url 'dashboard:order-invoice-chek' order_id=model.id %}`
+    if (website) {
+    let qrcodeContainer = document.getElementById("qrcode");
+    qrcodeContainer.innerHTML = "";
+    new QRCode(qrcodeContainer, website);
+    
+    document.getElementById("qrcode-container").style.display = "block";
+    } 
+    </script>
+</body>
+</html>

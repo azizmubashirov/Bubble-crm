@@ -1,0 +1,4 @@
+    {% for product in products %}
+    <option value="{{product.id}}">
+        {{product.production_product.name}} - {{product.amount }} м²</option>
+    {% endfor %}

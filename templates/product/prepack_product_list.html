@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+
+{% endblock css %}
+{% load templatetags %}
+{% block content %}
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+	<div class="d-flex flex-column flex-column-fluid">
+		<div id="kt_app_content" class="app-content flex-column-fluid">
+			<div id="kt_app_content_container" class="app-container container-xxl">
+				<div class="card mb-5 mb-xl-8">
+					<div class="card-header align-items-center py-5 gap-2 gap-md-5">
+						<div class="col-sm-12 col-md-5 d-flex">
+							<h3 class="card-title align-items-start flex-column">
+								<span class="card-label fw-bold fs-3 mb-1">
+									Полуфабрикат продукты
+								</span>
+							</h3>
+						</div>
+						<div class="card-toolbar">
+							<a class="btn btn-sm btn-light-primary" data-bs-toggle="modal" data-bs-target="#add_production_product">
+							<i class="ki-duotone ki-plus fs-2"></i>
+								Добавить готовый продукт
+							</a>
+					</div>
+					</div>
+					<div class="card-body py-3">
+						<div class="table-responsive">
+							<table class="table align-middle gs-0 gy-4">
+								<thead>
+									<tr class="fw-bold text-muted bg-light">
+										<form id="form-product" enctype="multipart/form-data" novalidate autocomplete="off">
+											<th class="ps-4 min-w-50px rounded-start">Номер</th>
+											<th class="ps-4 min-w-150px rounded-start">Название</th>
+											<th class="ps-4 min-w-100px rounded-start">Категория</th>
+											<th class="ps-4 min-w-100px rounded-start">Кол-во</th>
+											<th class="ps-4 min-w-60px rounded-start">Картинка</th>
+											<th class="ps-4 min-w-60px rounded-start">Использованно</th>
+											<th></th>
+										</form>
+									</tr>
+								</thead>
+								<tbody>
+									{% for product in products %}
+									<tr>
+										<td class="ps-4 ">
+											<a href="#" class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{product.id}}</a>
+										</td>
+										<td>
+											<a  class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{ product.production_product.name }}</a>
+										</td>
+										<td>
+											<a class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{product.production_product.category.name }}</a>
+										</td><td>
+											<a  class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{product.amount }}  кг</a>
+										</td>
+										<td>
+											<div class="symbol symbol-50px me-5">
+												{% if product.production_product.images and product.production_product.images.0 %}
+												 <img src="{{product.production_product.images.0}}" class="" alt="" />
+												{% else %}
+												 ---
+												{% endif %}
+											</div>
+										</td>
+										<td>
+											{% for stock in product.id|stock_item %}
+												<a  class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{stock.stock_product.name}}</a> sklad({{ stock.amount }}); brak({{ stock.defect_amount }})
+											{% endfor %}
+										</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+								<!--end::Table body-->
+							</table>
+							<!--end::Table-->
+						</div>
+						<!--end::Table container-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="add_production_product" tabindex="-1" role="dialog" aria-labelledby="popup-title">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="popup-title">Добавить продукт</h5>
+				<div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+					<i class="ki-duotone ki-cross fs-1">
+						<span class="path1"></span>
+						<span class="path2"></span>
+					</i>
+				</div>
+			</div>
+			<div class="modal-body">
+				<form id="add-product-form" method="post">
+					{% csrf_token %}
+					<div style="display: flex; align-items: center; margin-bottom: 30px;">
+						<div class="form-group" style="flex: 1;">
+							<select id="category_selected" class="form-control" style="width: 100%;">
+								<option value="" disabled selected>Выберите категория</option>
+								{% for category in categories %}
+									<option value="{{ category.id }}">{{ category.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="form-group" style="padding-left: 10px; flex: 1;">
+							<select id="select-products" name="production_product" class="form-control" style="width: 100%;">
+								<option value="" disabled selected>Выберите продукт</option>
+							</select>
+						</div>
+					</div>
+					<h3>Полуфабрикаты</h3>
+					<!-- Container for dynamically added input fields -->
+					<div id="stock-product-fields-container" >
+						<!-- Initial input fields for stock product -->
+						<div style="display: flex; align-items: center; margin-bottom: 10px;">
+							<div class="form-group" style="flex: 1;">
+								<select name="product" class="form-control" style="width: 100%;">
+									<option value="" disabled selected>Выберите полуфабрикат</option>
+									{% for product in products %}
+										<option value="{{ product.id }}">{{ product.production_product.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group" style="padding-left: 10px; flex: 1;">
+								<input type="number" name="amount_1" class="form-control" placeholder="количество (кг)">
+							</div>
+						</div>
+					</div>
+
+					<!-- "Add More" button -->
+					<button type="button" style="margin: 10px 0;" class="add-more-button btn btn-success ">Добавить больше</button>
+					<div class="modal-footer">
+						<button type="reset" id="" class="btn btn-danger me-3" data-bs-dismiss="modal">Закрыть</button>
+						<button type="submit" class="btn btn-primary">Сохранить</button>
+					</div>
+				</form>
+			</div>
+			
+		</div>
+	</div>
+</div>
+{% endblock content %}
+{% block javascript %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+function closeModal() {
+    this.modal("hide");
+}
+</script>
+
+<script>
+	var Count = 1;
+	$(".add-more-button").click(function () {
+		Count++;
+        let html = `<div style="display: flex; align-items: center;margin-bottom: 10px;">
+					<div class="form-group" style="flex: 1;">
+						<select name="product" class="form-control" style="width: 100%;">
+							<option value="" disabled selected>Выберите полуфабрикат</option>
+							{% for product in products %}
+								<option value="{{ product.id }}">{{ product.production_product.name }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group" style="padding-left: 10px; flex: 1;">
+						<input type="number" name="amount_${Count}" class="form-control" placeholder="количество (кг)">
+					</div>
+				</div>`
+		$('#stock-product-fields-container').append(html)
+    });
+
+	$('#category_selected').change(function(){
+		let category_id = $(this).val()
+		let csrftoken = '{{ csrf_token }}'
+		$.ajax({
+			type: 'POST',
+			url: `{% url 'dashboard:prepack-product-list' %}`,
+			headers:{'X-CSRFToken':csrftoken},
+			data: {'category_id':category_id},
+			success: function (response) {
+				const selectElement = document.getElementById('select-products');
+                response.products.forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product.id;
+                    option.text = product.name;
+                    selectElement.add(option);
+                });
+
+			},
+			error: function (error) {
+				Swal.fire("Xato", "Talangan e'lon tasdiqlanmadi!", "error")
+			}
+		})
+	})
+	$('.btn-save').click(function(){
+		var requestData = {
+			formData: $("#add-product-form").serialize()
+    	};
+		console.log(requestData);
+		// $.ajax({
+		// 	type: 'POST',
+		// 	url: `{% url 'dashboard:prepack-product-list' %}`,
+		// 	headers:{'X-CSRFToken':csrftoken},
+		// 	data: {'category_id':category_id},
+		// 	success: function (response) {
+		// 		const selectElement = document.getElementById('select-products');
+        //         response.products.forEach(product => {
+        //             const option = document.createElement('option');
+        //             option.value = product.id;
+        //             option.text = product.name;
+        //             selectElement.add(option);
+        //         });
+
+		// 	},
+		// 	error: function (error) {
+		// 		Swal.fire("Xato", "Talangan e'lon tasdiqlanmadi!", "error")
+		// 	}
+		// })
+	})
+</script>
+
+{% endblock javascript %}

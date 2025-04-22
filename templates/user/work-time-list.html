@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+
+{% endblock css %}
+{% load templatetags %}
+{% block content %}
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+	<div class="d-flex flex-column flex-column-fluid">
+		<div id="kt_app_content" class="app-content flex-column-fluid">
+			<div id="kt_app_content_container" class="app-container container-xxl">
+				<div class="card mb-5 mb-xl-8">
+					<div class="card-header align-items-center py-5 gap-2 gap-md-5">
+						
+						<div class="col-sm-12 col-md-5 d-flex">
+							<h3 class="card-title align-items-start flex-column">
+								<span class="card-label fw-bold fs-3 mb-1">
+									Рабочее время
+								</span>
+							</h3>
+						</div>
+                        <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
+							<!--begin::Flatpickr-->
+							<div class="input-group w-250px">
+								<input class="form-control form-control-solid rounded rounded-end-0 time-picker" placeholder="Фильтрация по дням " id="kt_ecommerce_sales_flatpickr" value="{{start_date}} to {{finish_date}}" />
+								<button class="btn btn-icon btn-light" id="kt_ecommerce_sales_flatpickr_clear">
+									<i class="ki-duotone ki-cross fs-2">
+										<span class="path1"></span>
+										<span class="path2"></span>
+									</i>
+								</button>
+							</div>
+							
+						</div>
+					</div>
+					<div class="card-body py-3">
+						<div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="fw-bold fs-6 text-gray-800">
+                                        <th>Имя</th>
+                                        <th>Фамилия</th>
+                                        <th>Имя пользователя</th>
+                                        <th>Номер телефона</th>
+                                        <th>Позиция</th>
+                                        <th>Рабочее время</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <td>{{user.firstname}}</td>
+                                        <td>{{user.lastname}}</td>
+                                        <td>{{user.username}}</td>
+                                        <td>{{user.phone_number}}</td>
+                                        <td>{{user.role.name}}</td>
+                                        <td>{% work_time_today user.id start_date finish_date%} час</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
+{% block javascript %}
+<script src="{% static 'plugins/global/plugins.bundle.js'%}"></script>
+<script>
+	$("#kt_ecommerce_sales_flatpickr").flatpickr({
+    altInput: true,
+    altFormat: "d/m/Y",
+    dateFormat: "Y-m-d",
+    mode: "range"
+});
+</script>
+<script>
+    function filterPage(addToPage){
+            var date = $(".time-picker").val().split(' to ');
+            let start_date = ''
+            let finish_date = ''
+            console.log(date);
+            if (date.length == 2) {
+                start_date = date[0]
+                finish_date = date[1]
+            }
+            
+    
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('start_date', start_date);
+            urlParams.set('finish_date', finish_date);
+    
+            window.location.search = urlParams;
+        }
+   
+    $(".time-picker").change(function(){
+        var date = $(".time-picker").val().split(' to ');
+        if (date.length == 2) {
+            filterPage(-parseInt($("li.page-item.active a.page-link").html()) + 1);
+        }
+        
+    });
+    $('#kt_ecommerce_sales_flatpickr_clear').click(function(e){
+        $('.time-picker').val(" ")
+        filterPage(-parseInt($("li.page-item.active a.page-link").html()) + 1);
+    })
+</script>
+{% endblock javascript %}

@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+	<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+		
+		<div class="post d-flex flex-column-fluid" id="kt_post">
+			<!--begin::Container-->
+			<div id="kt_content_container" class="container-xxl">
+				<!--begin::Row-->
+				<div class="row g-5 g-xl-8">
+					<div class="col-xl-3 w-50">
+						<!--begin::Statistics Widget 5-->
+						<span class="card bg-info hoverable card-xl-stretch mb-5 mb-xl-8">
+							<!--begin::Body-->
+							<div class="card-body">
+								<i class="ki-duotone ki-chart-pie-simple text-white fs-2x ms-n1">
+									<span class="path1"></span>
+									<span class="path2"></span>
+								</i>
+								<div class="text-white fw-bold fs-2 mb-2 mt-5">{{agent_balance.balance}} sum</div>
+								<div class="fw-semibold text-white">Баланс за этот месяц</div>
+							</div>
+							<!--end::Body-->
+						</span>
+						<!--end::Statistics Widget 5-->
+					</div>
+					<div class="col-xl-3 w-50">
+						<!--begin::Statistics Widget 5-->
+						<span class="card bg-dark hoverable card-xl-stretch mb-xl-8">
+							<!--begin::Body-->
+							<div class="card-body">
+								<i class="ki-duotone ki-cheque text-gray-100 fs-2x ms-n1">
+									<span class="path1"></span>
+									<span class="path2"></span>
+									<span class="path3"></span>
+									<span class="path4"></span>
+									<span class="path5"></span>
+									<span class="path6"></span>
+									<span class="path7"></span>
+								</i>
+								<div class="text-gray-100 fw-bold fs-2 mb-2 mt-5">{{agent_balance.plan}} sum</div>
+								<div class="fw-semibold text-gray-100">План за этот месяц</div>
+							</div>
+							<!--end::Body-->
+						</span>
+						<!--end::Statistics Widget 5-->
+					</div>
+					<div class="col-xl-3 w-50">
+						<!--begin::Statistics Widget 5-->
+						<span class="card bg-body hoverable card-xl-stretch mb-xl-8">
+							<!--begin::Body-->
+							<div class="card-body">
+								<i class="ki-duotone ki-chart-simple text-primary fs-2x ms-n1">
+									<span class="path1"></span>
+									<span class="path2"></span>
+									<span class="path3"></span>
+									<span class="path4"></span>
+								</i>
+								<div class="text-gray-900 fw-bold fs-2 mb-2 mt-5">{{ client_count }}</div>
+								<div class="fw-semibold text-gray-500" style="font-size: 11px;">Количество клиентов</div>
+							</div>
+							<!--end::Body-->
+						</span>
+						<!--end::Statistics Widget 5-->
+					</div>
+					
+					<div class="col-xl-3 w-50">
+						<!--begin::Statistics Widget 5-->
+						<span class="card bg-warning hoverable card-xl-stretch mb-xl-8">
+							<!--begin::Body-->
+							<div class="card-body">
+								<i class="ki-duotone ki-briefcase text-white fs-2x ms-n1">
+									<span class="path1"></span>
+									<span class="path2"></span>
+								</i>
+								<div class="text-white fw-bold fs-2 mb-2 mt-5">{{order_count}}</div>
+								<div class="fw-semibold text-white">Кол-во заказов</div>
+							</div>
+							<!--end::Body-->
+						</span>
+						<!--end::Statistics Widget 5-->
+					</div>
+					
+				</div>
+				<div class="col-xl-12 mb-5 mb-xl-10">
+					<!--begin::Table Widget 4-->
+					<div class="card card-flush h-xl-100">
+						<!--begin::Card header-->
+						<div class="card-header pt-7">
+							<!--begin::Title-->
+							<h3 class="card-title align-items-start flex-column">
+								<span class="card-label fw-bold text-gray-800">Последние клиенты</span>
+							</h3>
+						</div>
+						<!--end::Card header-->
+						<!--begin::Card body-->
+						<div class="card-body pt-2">
+							<!--begin::Table-->
+							<table class="table align-middle table-row-dashed fs-6 gy-3" id="kt_table_widget_4_table">
+								<!--begin::Table head-->
+								<thead>
+									<!--begin::Table row-->
+									<tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+										<th class="min-w-100px">Ф.И.О</th>
+										<th class="text-end min-w-125px">Название компании</th>
+										<th class="text-end"></th>
+									</tr>
+								</thead>
+								<!--begin::Table body-->
+								<tbody class="fw-bold text-gray-600">
+									{% for client in clients %}
+									<tr>
+										<td>
+											<span class="text-gray-800 text-hover-primary">{{ client.firstname }} {{ client.lastname }}</span>
+										</td>
+										
+										<td class="text-center">
+											<span class="text-gray-600 text-hover-primary">{{ client.company_name }}</span>
+										</td>
+										
+										<td class="text-end">
+											<a href="{% url 'dashboard:add-order' client_id=client.id %}" class="btn btn-sm btn-icon btn-light btn-active-light-primary toggle h-25px w-25px" data-kt-table-widget-4="expand_row">
+												<i class="ki-duotone ki-plus fs-4 m-0 toggle-off"></i>
+												<i class="ki-duotone ki-minus fs-4 m-0 toggle-on"></i>
+											</a>
+										</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+								<!--end::Table body-->
+							</table>
+							<!--end::Table-->
+						</div>
+						<!--end::Card body-->
+					</div>
+					<!--end::Table Widget 4-->
+				</div>
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::Post-->
+	</div>
+	<!--end::Content-->
+
+{% endblock content %}

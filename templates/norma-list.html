@@ -1,0 +1,229 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% load templatetags %}
+{% block content %}
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+    <!--begin::Content wrapper-->
+    <div class="d-flex flex-column flex-column-fluid">
+        
+        <div id="kt_app_content" class="app-content flex-column-fluid">
+            <!--begin::Content container-->
+            <div id="kt_app_content_container" class="app-container container-xxl">
+                <!--begin::Row-->
+                <div class="row g-5 g-xl-8">
+                    <!--begin::Col-->
+                    <div class="col-xl-6">
+                        <!--begin::Tables Widget 1-->
+                        <div class="card card-xl-stretch mb-xl-8">
+                            <!--begin::Header-->
+                            <div class="card-header border-0 pt-5">
+                                <h3 class="card-title align-items-start flex-column">
+                                    <span class="card-label fw-bold fs-3 mb-1">Стандартный список</span>
+                                </h3>
+                            </div>
+                            <!--end::Header-->
+                            <!--begin::Body-->
+                            <div class="card-body py-3">
+                                <!--begin::Table container-->
+                                <div class="table-responsive">
+                                    <!--begin::Table-->
+                                    <table class="table align-middle gs-0 gy-5">
+                                        <!--begin::Table head-->
+                                        <thead>
+                                            <tr>
+                                                <th class="p-0 w-10px"></th>
+                                                <th class="p-0 min-w-200px"></th>
+                                                <th class="p-0 min-w-100px"></th>
+                                                <th class="p-0 min-w-40px"></th>
+                                            </tr>
+                                        </thead>
+                                        <!--end::Table head-->
+                                        <!--begin::Table body-->
+                                        <tbody>
+                                            {% for product in products %}
+                                            <tr>
+                                                <th>
+                                                   
+                                                </th>
+                                                <td>
+                                                    <a class="text-dark fw-bold text-hover-primary mb-1 fs-6">{{product.name}}</a>
+                                                    <span class="text-muted fw-semibold d-block fs-7">{{product.category.name}}</span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex flex-column w-100 me-2">
+                                                        <div class="d-flex flex-stack mb-2">
+                                                            <span class="text-muted me-2 fs-7 fw-bold">1кг = {{product.norm}} м²</span>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </td>
+                                                <td class="text-end">
+                                                    <a href="{% url 'dashboard:production-product-info-edit' pk=product.id %}" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary">
+                                                        <i class="ki-duotone ki-arrow-right fs-2">
+                                                            <span class="path1"></span>
+                                                            <span class="path2"></span>
+                                                        </i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <!--end::Table body-->
+                                    </table>
+                                    <!--end::Table-->
+                                </div>
+                                <!--end::Table container-->
+                            </div>
+                            <!--end::Body-->
+                        </div>
+                        <!--endW::Tables Widget 1-->
+                    </div>
+                    <!--end::Col-->
+                    <!--begin::Col-->
+                    <div class="col-xl-6">
+                        <!--begin::Tables Widget 2-->
+                        <div class="card card-xl-stretch mb-5 mb-xl-8">
+                            <!--begin::Header-->
+                            <div class="card-header border-0 pt-5">
+                                <h3 class="card-title align-items-start flex-column">
+                                    <span class="card-label fw-bold fs-3 mb-1">Полуфабрикат продукты</span>
+                                </h3>
+                                <div class="w-80 mw-100px">
+                                    <!--begin::Select2-->
+                                    <select class="form-select form-select-solid" id="id_list_entries" data-control="select2" data-hide-search="true">
+                                        {% for entry in entries_list %}
+                                            <option value="{{ entry }}" {% if entries == entry %}selected{% endif %}>{{ entry }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <!--end::Select2-->
+                                </div>
+                            </div>
+                            <!--end::Header-->
+                            <!--begin::Body-->
+                            <div class="card-body py-3">
+                                <!--begin::Table container-->
+                                <div class="table-responsive">
+                                    <!--begin::Table-->
+                                    <table class="table align-middle gs-0 gy-5">
+                                        <!--begin::Table head-->
+                                        <thead>
+                                            <tr>
+                                                <th class="p-0 w-10px"></th>
+                                                <th class="p-0 min-w-120px"></th>
+                                                <th class="p-0 min-w-100px"></th>
+                                                <th class="p-0 min-w-105px"></th>
+                                                <th class="p-0 min-w-100px"></th>
+                                            </tr>
+                                        </thead>
+                                        <!--end::Table head-->
+                                        <!--begin::Table body-->
+                                        <tbody>
+                                            {% for prepack in prepack_item %}
+                                            <tr>
+                                               <td></td>
+                                                <td>
+                                                    <a class="text-dark fw-bold text-hover-primary mb-1 fs-6"> {{prepack.worker.firstname}} {{prepack.worker.lastname}}</a>
+                                                    <span class="text-muted fw-semibold d-block fs-7">{{prepack.production_product.name}}</span>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span class="text-muted fw-bold">{{prepack.amount_old}} кг = {{prepack.amount_m}} м²</span>
+                                                </td>
+                                                <td class="text-end">
+                                                    {{ prepack.id|norma_cal|safe }}
+                                                </td>
+                                                <td class="text-end">
+                                                    <span class="text-muted fw-bold">{{prepack.created_at|date:'d-m-Y'}}</span>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <!--end::Table body-->
+                                    </table>
+                                    <!--end::Table-->
+                                </div>
+                                <!--end::Table container-->
+                            
+                            <!--end::Body-->
+                            <div class="row dataTables_wrapper dt-bootstrap4 no-footer" style="border-top: var(--bs-card-border-width) solid var(--bs-card-border-color);padding: 1em 0em;">
+                                <div class="col-sm-12 col-md-12 d-flex justify-content-md-end">
+                                    <div class="dataTables_paginate paging_simple_numbers" id="kt_ecommerce_sales_table_paginate">
+                                        <ul class="pagination" id="id_pagination" style="justify-content: end;">
+                                            <li class="page-item {% if not prepack_item.has_previous %}disabled{% endif %}">
+                                                <a class="page-link with-prev-row" href="" data-action="{% if prepack_item.has_previous %}?page={{ prepack_item.previous_page_number }}{% endif %}">
+                                                    <i class="previous"></i>
+                                                </a>
+                                            </li>
+                                            {% for i in prepack_item.paginator.page_range %}
+                                                {% if prepack_item.number == i %}
+                                                    <li class="page-item active">
+                                                        <a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+                                                    </li>
+                                                {% elif prepack_item.number == values.paginator.num_pages and values.number|add:"-2" == i%}
+                                                    <li class="page-item">
+                                                        <a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+                                                    </li>
+                                                {% elif prepack_item.number == 1 and prepack_item.number|add:"2" == i %}
+                                                    <li class="page-item">
+                                                        <a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+                                                    </li>
+                                                {% elif prepack_item.number|add:"1" == i or prepack_item.number|add:"-1" == i %}
+                                                    <li class="page-item">
+                                                        <a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <li class="page-item {% if not prepack_item.has_next %}disabled{% endif %}">
+                                                <a class="page-link with-next-row" href="" data-action="{% if prepack_item.has_next %}?page={{ prepack_item.next_page_number }}{% endif %}">
+                                                    <i class="next"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        <!--end::Tables Widget 2-->
+                    </div>
+                    <!--end::Col-->
+                </div>
+            </div>
+            <!--end::Content container-->
+        </div>
+        <!--end::Content-->
+    </div>
+</div>
+{% endblock content %}
+{% block javascript %}
+<script>
+    function filterPage(addToPage){
+            var entries = $("#id_list_entries option:selected").val();
+            var page = parseInt($("li.page-item.active a.page-link").html()) + addToPage;
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('entries', entries);
+            urlParams.set('page', page);
+    
+            window.location.search = urlParams;
+        }
+    $("#id_list_entries, #id_list_status").change(function(){
+        filterPage(-parseInt($("li.page-item.active a.page-link").html()) + 1);
+    });
+    $("a.page-link.page-number").click(function(e){
+        e.preventDefault();
+        var page = parseInt($(this).html());
+        if (parseInt($("li.page-item.active a.page-link").html()) != page){
+            filterPage(page - parseInt($("li.page-item.active a.page-link").html()));
+        }
+    });
+    $("a.page-link.with-next-row").click(function(e){
+        e.preventDefault();
+        filterPage(1);
+    });
+    $("a.page-link.with-prev-row").click(function(e){
+        e.preventDefault();
+        filterPage(-1);
+    });
+  
+    </script>
+{% endblock javascript %}

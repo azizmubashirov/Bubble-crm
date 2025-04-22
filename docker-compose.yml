@@ -1,0 +1,50 @@
+version: "3.10"
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=bubble_db
+      - POSTGRES_USER=bubble_user
+      - POSTGRES_PASSWORD=booble_root
+    ports:
+      - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: buble_pgadmin
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: adminpassword
+    ports:
+      - "8008:80"
+    depends_on:
+      - db
+  web:
+    build: .
+    volumes:
+      - ./static:/app/static
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_DB=bubble_db
+      - POSTGRES_USER=bubble_user
+      - POSTGRES_PASSWORD=booble_root
+    depends_on:
+      - db
+  nginx:
+    build: nginx
+    restart: always
+    volumes:
+      - ./static:/app/static
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+volumes:
+  static:
+  media:

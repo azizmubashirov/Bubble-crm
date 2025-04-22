@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+
+{% endblock css %}
+{% block content %}
+
+
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+    <!--begin::Content wrapper-->
+    <div class="d-flex flex-column flex-column-fluid">
+
+        <div id="kt_app_content" class="app-content flex-column-fluid">
+            <!--begin::Content container-->
+            <div id="kt_app_content_container" class="app-container container-xxl">
+                <!--begin::Form-->
+                <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" method="post"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="kt_ecommerce_add_product_advanced"
+                                role="tab-panel">
+                                <div class="d-flex flex-column gap-7 gap-lg-10">
+                                    <div class="card card-flush py-4">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                <h2> Вопрос</h2>
+                                            </div>
+                                        </div>
+                                        <div class="card-body pt-0">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="row mt-2">
+                                                        <div class="form-group col-md-6">
+                                                            {{ form.firstname.errors }}
+                                                            <label class="required form-label"
+                                                                for="{{ form.firstname.id_for_label }}">{{ form.firstname.label }}</label>
+                                                            {{ form.firstname }}
+                                                        </div> 
+                                                        <div class="form-group col-md-6">
+                                                            {{ form.lastname.errors }}
+                                                            <label class="required form-label"
+                                                                for="{{ form.lastname.id_for_label }}">{{ form.lastname.label }}</label>
+                                                            {{ form.lastname }}
+                                                        </div> 
+                                                    </div>
+                                                    <div class="row mt-5">
+                                                        <div class="form-group col-md-6">
+                                                            {{ form.company_name.errors }}
+                                                            <label class="required form-label"
+                                                                for="{{ form.company_name.id_for_label }}">{{ form.company_name.label }}</label>
+                                                            {{ form.company_name }}
+                                                        </div> 
+                                                        <div class="form-group col-md-6">
+                                                            {{ form.inn.errors }}
+                                                            <label class="required form-label"
+                                                                for="{{ form.inn.id_for_label }}">{{ form.inn.label }}</label>
+                                                            {{ form.inn }}
+                                                        </div> 
+                                                    </div>
+                                                    <div class="row mt-5">
+                                                        <div class="form-group col-md-6">
+                                                            {{ form.address.errors }}
+                                                            <label class="required form-label"
+                                                                for="{{ form.address.id_for_label }}">{{ form.address.label }}</label>
+                                                            {{ form.address }}
+                                                        </div> 
+                                                        <div class="form-group col-md-6">
+                                                            {{ form.location_link.errors }}
+                                                            <label class="required form-label"
+                                                                for="{{ form.location_link.id_for_label }}">{{ form.location_link.label }}</label>
+                                                            {{ form.location_link }}
+                                                        </div> 
+                                                    </div>
+                                                    <div class="row mt-5">
+                                                        <label class="required form-label"
+                                                            for="">Location</label>
+                                                        <div class="form-group col-md-6" id="id_location_lat">
+                                                            {{ form.latitude.errors }}
+                                                            {{ form.latitude }}
+                                                        </div>
+                                                        <div class="form-group col-md-6" id="id_location_long">
+                                                            {{ form.longitude.errors }}
+                                                            {{ form.longitude }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="row">
+                                                        <div id="kt_ecommerce_add_product_options">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div class="d-flex flex-column gap-3 container__list">
+                                                                    <label class="required form-label"
+                                                                        for="">Телефонный номер</label>
+                                                                        {% for value in values %}
+                                                            
+                                                                        <div class="parent__wrap form-group d-flex flex-wrap align-items-center gap-5">
+                                                                            <!--begin::Select2-->
+                                                                            <input type="text" class="form-control mw-100 w-300px"
+                                                                                name="value" placeholder="Значение Уз" value="{{ value.phone_number}}" disabled/>
+                                                                        </div>
+                                                                        {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-5">
+                                                                <button type="button"
+                                                                    class="btn__adding btn btn-sm btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-2"></i>Добавлять</button>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div id="map" style="height: 500px;"></div>
+                                                </div>
+                                                <div class="d-flex justify-content-end" style="margin-top: 20px;">
+
+                                                    <!--begin::Button-->
+                                                    <a href="{% url 'dashboard:client-list' agent_id=request.user.id %}" id="kt_ecommerce_add_product_cancel"
+                                                        class="btn btn-light me-5">Отмена</a>
+                                                    <!--end::Button-->
+                                                    <!--begin::Button-->
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <span class="indicator-label">Сохранить</span>
+                                                    </button>
+                                                    <!--end::Button-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+{% block javascript %}
+<script src="https://api-maps.yandex.ru/2.1/?apikey=82fc8ff2-bac0-497a-9248-ed690f34436f&lang=en_US" type="text/javascript"></script>
+<script>
+    ymaps.ready(function () {
+
+        var targetCoords = [41.311151, 69.279737],
+        // var targetCoords = [41.311151, 69.279737],
+
+            myMap = new ymaps.Map('map', {
+                center: targetCoords,
+                zoom: 12
+            }, {
+                searchControlResults: 1,
+
+                searchControlNoCentering: true,
+
+                buttonMaxWidth: 100
+            }),
+
+            targetPoint = new ymaps.Placemark(targetCoords, { iconContent: 'Kremlin' }, { preset: 'islands#redStretchyIcon' }),
+
+            searchControl = myMap.controls.get('searchControl'),
+            geolocationControl = myMap.controls.get('geolocationControl'),
+
+
+            sourcePoint,
+            currentRoutingMode;
+
+        myMap.events.add('click', onMapClick);
+        searchControl.events.add('resultshow', onSearchShow);
+        geolocationControl.events.add('locationchange', onGeolocate);
+
+
+        function onMapClick (e) {
+            clearSourcePoint();
+            var latitude = `<input type="text" name="latitude" class="form-control" required="" id="id_latitude" value="`+ e.get('coords')[0] +`" >`
+            var longitude = `<input type="text" name="longitude" class="form-control" required="" id="id_longitude" value="`+ e.get('coords')[1] +`" >`
+            $('#id_location_lat').html(latitude)
+            $('#id_location_long').html(longitude)
+            sourcePoint = new ymaps.Placemark(e.get('coords'), { iconContent: '' }, { preset: 'islands#icon' });
+            myMap.geoObjects.add(sourcePoint);
+            createRoute();
+        }
+
+        function onSearchShow (e) {
+            clearSourcePoint(true);
+            sourcePoint = searchControl.getResultsArray()[e.get('index')];
+            createRoute();
+        }
+
+        function onGeolocate (e) {
+            clearSourcePoint();
+            sourcePoint = e.get('geoObjects').get(0);
+            createRoute();
+        }
+
+        function clearSourcePoint (keepSearchResult) {
+            if (!keepSearchResult) {
+                searchControl.hideResult();
+            }
+
+            if (sourcePoint) {
+                myMap.geoObjects.remove(sourcePoint);
+                sourcePoint = null;
+            }
+        }
+        function createRoute (routingMode, targetBtn) {
+
+            // If the route starting point hasn't been selected yet, we don't do anything.
+            if (!sourcePoint) {
+                currentRoutingMode = routingMode;
+                geolocationControl.events.fire('press');
+                return;
+            }
+            currentRoutingMode = routingMode;
+        }
+        });
+
+</script>
+<script>
+
+    let inCountPic = `{{values|length}}`
+    let inCountPic2 = `{{values|length}}`
+    $('.btn__adding').click(function (e) {
+        e.preventDefault();
+        inCountPic++
+        inCountPic2++
+        $('.container__list').append(`
+                <div class="form-group parent__wrap d-flex flex-wrap align-items-center gap-5">
+                    <input type="text" class="form-control mw-100 w-300px" name="value" placeholder="+998" />
+                    <button type="button" class="btn__delete btn btn-sm btn-icon btn-light-danger">
+                        <i class="ki-duotone ki-cross fs-1">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </button>
+                </div>`);
+
+    $('.container__list button.btn__delete').click(function(e) {
+        e.preventDefault();
+        $(this).parent().remove();
+    });
+});
+$('.container__list button.btn__delete').click(function(e) {
+        e.preventDefault();
+        $(this).parent().remove();
+});
+</script>
+{% endblock javascript %}

@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+
+{% endblock css %}
+{% block content %}
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+	<div class="d-flex flex-column flex-column-fluid">
+		<div id="kt_app_content" class="app-content flex-column-fluid">
+			<div id="kt_app_content_container" class="app-container container-xxl">
+				<div class="card mb-5 mb-xl-8">
+					<div class="card-header align-items-center py-5 gap-2 gap-md-5">
+						<div class="col-sm-12 col-md-7 d-flex">
+							<h3 class="card-title align-items-start flex-column">
+								<span class="card-label fw-bold fs-3 mb-1">
+									Клиенты ({{clients|length}})
+								</span>
+							</h3>
+							<div class=" card-title align-items-start flex-column">
+								<label>
+									<select class="form-select form-select-sm form-select-solid" id="id_list_entries">
+										{% for entry in entries_list %}
+											<option value="{{ entry }}" {% if entries == entry %}selected{% endif %}>{{ entry }}</option>
+										{% endfor %}
+									</select>
+								</label>
+							</div>
+							<div class="d-flex align-items-center position-relative my-1 ms-8">
+								<i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4">
+									<span class="path1"></span>
+									<span class="path2"></span>
+								</i>
+								<input type="text" data-kt-ecommerce-order-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="Найти клиента" id="id_search" value="{{ search }}"  style="padding-top: 0.55rem;padding-bottom: 0.55rem;"/>
+							</div>
+						</div>
+						<div class="card-toolbar">
+							<a href="{% url 'dashboard:client-create' %}" class="btn btn-sm btn-light-primary">
+							<i class="ki-duotone ki-plus fs-2"></i>
+								Добавить клиента
+							</a>
+						</div>
+					</div>
+					<div class="card-body py-3">
+						<div class="table-responsive">
+							<table class="table align-middle gs-0 gy-4">
+								<thead>
+									<tr class="fw-bold text-muted bg-light">
+										<th class="ps-4 min-w-300px rounded-start">Клиент</th>
+										<th class="min-w-125px">Компания</th>
+										<th class="min-w-125px">ИНН</th>
+										<th class="min-w-125px">Электронная почта</th>
+										<th class="min-w-120px">Адрес</th>
+										<th class="min-w-150px text-end rounded-end"></th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for client in clients %}
+									<tr>
+										<td>
+											<div class="d-flex align-items-center">
+												<div class="symbol symbol-50px me-5">
+													<div class="symbol-label fs-3 bg-light-success text-success">{{client.firstname.0}}</div>
+												</div>
+												<div class="d-flex justify-content-start flex-column">
+													<span class="text-dark fw-bold text-hover-primary mb-1 fs-6">{{client.firstname}} {{client.lastname}}</span>
+												</div>
+											</div>
+										</td>
+										<td>
+											<span class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{client.company_name}}</span>
+										</td>
+										<td>
+											<span class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">{{client.inn}}</span>
+										</td>
+										<td>
+											<a href="https://yandex.uz/maps/?pt={{model.location.longitude}},{{model.location.latitude}}&z=16&l=map" class="fw-bold fs-6 text-gray-800 text-hover-primary">Нажмите
+												<i class="ki-duotone ki-exit-right-corner">
+													<span class="path1"></span>
+													<span class="path2"></span>
+												</i>
+												</a>
+										</td>
+										<td>
+											<span class="badge badge-light-primary fs-7 fw-bold">{{client.address}}</span>
+										</td> 
+										<td class="text-end">
+											<a href="{% url 'dashboard:client-view' client_id=client.id %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+												<i class="ki-duotone ki-eye fs-2x">
+												<span class="path1"></span>
+												<span class="path2"></span>
+												<span class="path3"></span>
+												</i>
+											</a>
+											<a href="{% url 'dashboard:add-order' client_id=client.id %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+												<i class="ki-duotone ki-plus-square text-success fs-2x">
+													<span class="path1"></span>
+													<span class="path2"></span>
+													<span class="path3"></span>
+												</i>
+											</a>
+											
+											<a href="{% url 'dashboard:client-edit' client_id=client.id %}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+												<i class="ki-duotone ki-pencil fs-2">
+													<span class="path1"></span>
+													<span class="path2"></span>
+												</i>
+											</a>
+										</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+								<!--end::Table body-->
+							</table>
+							<!--end::Table-->
+						</div>
+						<!--end::Table container-->
+					</div>
+					<div class="row dataTables_wrapper dt-bootstrap4 no-footer" style="border-top: var(--bs-card-border-width) solid var(--bs-card-border-color);padding: 1em 0em;">
+						<div class="col-sm-12 col-md-12 d-flex justify-content-md-end">
+							<div class="dataTables_paginate paging_simple_numbers" id="kt_ecommerce_sales_table_paginate">
+								<ul class="pagination" id="id_pagination" style="justify-content: end;">
+									<li class="page-item {% if not clients.has_previous %}disabled{% endif %}">
+										<a class="page-link with-prev-row" href="" data-action="{% if clients.has_previous %}?page={{ clients.previous_page_number }}{% endif %}">
+											<i class="previous"></i>
+										</a>
+									</li>
+									{% for i in clients.paginator.page_range %}
+										{% if clients.number == i %}
+											<li class="page-item active">
+												<a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+											</li>
+										{% elif clients.number == values.paginator.num_pages and values.number|add:"-2" == i%}
+											<li class="page-item">
+												<a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+											</li>
+										{% elif clients.number == 1 and clients.number|add:"2" == i %}
+											<li class="page-item">
+												<a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+											</li>
+										{% elif clients.number|add:"1" == i or clients.number|add:"-1" == i %}
+											<li class="page-item">
+												<a class="page-link page-number" href="" data-action="{{ i }}">{{ i }}</a>
+											</li>
+										{% endif %}
+									{% endfor %}
+									<li class="page-item {% if not clients.has_next %}disabled{% endif %}">
+										<a class="page-link with-next-row" href="" data-action="{% if clients.has_next %}?page={{ clients.next_page_number }}{% endif %}">
+											<i class="next"></i>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!--begin::Body-->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}
+{% block javascript %}
+<script>
+    function filterPage(addToPage){
+        var entries = $("#id_list_entries option:selected").val();
+		var search = $("#id_search").val();
+        var page = parseInt($("li.page-item.active a.page-link").html()) + addToPage;
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        urlParams.set('entries', entries);
+		urlParams.set('search', search);
+        urlParams.set('page', page);
+
+        window.location.search = urlParams;
+    }
+    $("#id_list_entries").change(function(){
+        filterPage(-parseInt($("li.page-item.active a.page-link").html()) + 1);
+    });
+	$("#id_search").change(function(){
+		filterPage(-parseInt($("li.page-item.active a.page-link").html()) + 1);
+	});
+    $("a.page-link.page-number").click(function(e){
+        e.preventDefault();
+        var page = parseInt($(this).html());
+        if (parseInt($("li.page-item.active a.page-link").html()) != page){
+            filterPage(page - parseInt($("li.page-item.active a.page-link").html()));
+        }
+    });
+    $("a.page-link.with-next-row").click(function(e){
+        e.preventDefault();
+        filterPage(1);
+    });
+    $("a.page-link.with-prev-row").click(function(e){
+        e.preventDefault();
+        filterPage(-1);
+    });
+</script>
+{% endblock javascript %}

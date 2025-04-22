@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+
+{% endblock css %}
+{% block content %}
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+	<div class="d-flex flex-column flex-column-fluid">
+	<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+		<div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
+			<div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+				<h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">{% if product %}Изменить продукт{% else %}Добавить продукт{% endif %}</h1>
+				<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+					<li class="breadcrumb-item text-muted">
+						<a href="{% url 'dashboard:dashboard'%}" class="text-muted text-hover-primary">Главная</a>
+					</li>
+					<li class="breadcrumb-item">
+						<span class="bullet bg-gray-400 w-5px h-2px"></span>
+					</li>
+					<li class="breadcrumb-item text-muted">{% if type == 'stock' %}Продукт{% else %}Брак продукт{% endif %}</li>
+					<li class="breadcrumb-item">
+						<span class="bullet bg-gray-400 w-5px h-2px"></span>
+					</li>
+					<li class="breadcrumb-item text-muted">{% if product %}Изменить продукт{% else %}Добавить продукт{% endif %}</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div id="kt_app_content" class="app-content flex-column-fluid">
+        <!--begin::Content container-->
+        <div id="kt_app_content_container" class="app-container container-xxl">
+            <form id="kt_ecommerce_add_category_form" class="form d-flex flex-column flex-lg-row" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!--begin::Aside column-->
+                <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
+                    <!--begin::Thumbnail settings-->
+                    <div class="card card-flush py-4">
+                        <!--begin::Card header-->
+                        <div class="card-header">
+                            <!--begin::Card title-->
+                            <div class="card-title">
+                                <h2>Изображение продукта</h2>
+                            </div>
+                            <!--end::Card title-->
+                        </div>
+                        <!--end::Card header-->
+                        <!--begin::Card body-->
+                        <div class="card-body text-center pt-0">
+                            <!--begin::Image input-->
+                            {% if product %}
+                            <style>.image-input-placeholder { background-image: url('{{MEDIA_URL}}{{product.images.0}}'); } [data-bs-theme="dark"] .image-input-placeholder { background-image: url('{{MEDIA_URL}}{{product.images.0}}'); }</style>
+                            {% else %}
+                            <style>.image-input-placeholder { background-image: url('/static/media/svg/files/blank-image.svg'); } [data-bs-theme="dark"] .image-input-placeholder { background-image: url('/static/media/svg/files/blank-image-dark.svg'); }</style>
+                            {% endif %}
+                            <!--begin::Image input-->
+                            <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true">
+                                <!--begin::Preview existing avatar-->
+                                <div class="image-input-wrapper w-150px h-150px"></div>
+                                <!--end::Preview existing avatar-->
+                                <!--begin::Label-->
+                                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Изменить картину">
+                                    <!--begin::Icon-->
+                                    <i class="ki-duotone ki-pencil fs-7">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                    <!--end::Icon-->
+                                    <!--begin::Inputs-->
+                                    <input type="file" name="file" accept=".png, .jpg, .jpeg" />
+                                    <input type="hidden" name="avatar_remove" />
+                                    <!--end::Inputs-->
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Cancel-->
+                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Отмена">
+                                    <i class="ki-duotone ki-cross fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </span>
+                                <!--end::Cancel-->
+                                <!--begin::Remove-->
+                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Удалить картину">
+                                    <i class="ki-duotone ki-cross fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </span>
+                                <!--end::Remove-->
+                            </div>
+                            <!--end::Image input-->
+                            <!--begin::Description-->
+                            <div class="text-muted fs-7">Установите миниатюру изображения категории. Принимаются только файлы изображений *.png, *.jpg и *.jpeg.</div>
+                            <!--end::Description-->
+                        </div>
+                        <!--end::Card body-->
+                    </div>
+                    <!--end::Thumbnail settings-->
+                </div>
+                <!--end::Aside column-->
+                <!--begin::Main column-->
+                <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
+                    <!--begin::General options-->
+                    <div class="card card-flush py-4">
+                        <!--begin::Card header-->
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h2>Детали продукта</h2>
+                            </div>
+                        </div>
+                        <!--end::Card header-->
+                        <!--begin::Card body-->
+                        <div class="card-body pt-0">
+                            <div class="mb-10 fv-row">
+                                {{ form.name.errors }}
+								<label class="required form-label mb-3">{{ form.name.label }}</label>
+								{{ form.name }}
+								<div class="text-muted fs-7">Название продукта является обязательным и рекомендуется, чтобы оно было уникальным.</div>
+                            </div>
+                            <div>
+                                {{ form.category.errors }}
+								<label class="required form-label mb-3">{{ form.category.label }}</label>
+								{{ form.category }}
+                                <div class="text-muted fs-7">Выберите категорию продукта для лучшей видимости.</div>
+                            </div>
+                            {% if type == 'stock' %}
+                                <div>
+                                {{ form.price.errors }}
+                                    <label class="required form-label mb-3">{{ form.price.label }}</label>
+                                    {{ form.price }}
+                                </div>
+                                <div>
+                                    {{ form.amount.errors }}
+                                    <label class="required form-label mb-3">{{ form.amount.label }}</label>
+                                    {{ form.amount }} {{ form.category.type.name }}
+                                </div>
+                            {% else %}
+                                <div>
+                                    {{ form.defect.errors }}
+                                    <label class="required form-label mb-3">{{ form.defect.label }}</label>
+                                    {{ form.defect }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!--end::Card header-->
+                    </div>
+                    <!--end::General options-->
+                    <div class="d-flex justify-content-end">
+                        <!--begin::Button-->
+                        {% if type == 'stock' %}
+                            <a href="{% url 'dashboard:product-list'%}" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">Отмена</a>
+                        {% else %}
+                            <a href="{% url 'dashboard:defect-list'%}" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">Отмена</a>
+                        {% endif  %}
+                        <!--end::Button-->
+                        <!--begin::Button-->
+                        <button type="submit" id="kt_ecommerce_add_category_submit" class="btn btn-primary">
+                            <span class="indicator-label">Сохранить изменения</span>
+                            <span class="indicator-progress">Подалуйста подождите...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </button>
+                        <!--end::Button-->
+                    </div>
+                </div>
+                <!--end::Main column-->
+            </form>
+        </div>
+        <!--end::Content container-->
+    </div>
+</div>
+</div>
+{% endblock content %}
+{% block javascript %}
+<script src="{% static 'js/custom/utilities/modals/create-account.js'%}"></script>
+<script>
+</script>
+{% endblock javascript %}

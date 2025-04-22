@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+     <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+}
+
+.invoice-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #333;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.invoice-title {
+    text-align: right;
+}
+
+.invoice-title h1 {
+    margin: 0;
+    color: #ff9800;
+}
+
+.invoice-title p {
+    margin: 0;
+    color: #333;
+}
+
+.bill-to, .invoice-date, .payment-info, .footer {
+    margin: 20px 0;
+}
+
+.bill-to h3, .payment-info h3 {
+    margin: 0;
+    color: #ff9800;
+}
+
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.invoice-table th, .invoice-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.invoice-table th {
+    background-color: #f2f2f2;
+}
+
+.invoice-table tfoot td {
+    font-weight: bold;
+    text-align: right;
+}
+
+.invoice-table tfoot td:last-child {
+    text-align: left;
+}
+
+.footer {
+    text-align: right;
+}
+
+.footer p {
+    margin: 0;
+    color: #333;
+}
+
+     </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="header">
+            <div class="logo">YOUR LOGO</div>
+            <div class="invoice-title">
+                <h1>INVOICE</h1>
+                <p>No: INV-12345-1</p>
+            </div>
+        </div>
+        <div class="bill-to">
+            <h3>Bill To:</h3>
+            <p>ARON LOEB</p>
+            <p>+123-456-7890</p>
+            <p>123 Anywhere St., Any City</p>
+        </div>
+        <div class="invoice-date">
+            <p>Date: 10 September 2024</p>
+        </div>
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Your Description</td>
+                    <td>1</td>
+                    <td>$0.00</td>
+                    <td>$0.00</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Your Description</td>
+                    <td>1</td>
+                    <td>$0.00</td>
+                    <td>$0.00</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Your Description</td>
+                    <td>1</td>
+                    <td>$0.00</td>
+                    <td>$0.00</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Your Description</td>
+                    <td>1</td>
+                    <td>$0.00</td>
+                    <td>$0.00</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Your Description</td>
+                    <td>1</td>
+                    <td>$0.00</td>
+                    <td>$0.00</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Your Description</td>
+                    <td>1</td>
+                    <td>$0.00</td>
+                    <td>$0.00</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">Total</td>
+                    <td>$0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="4">Discount</td>
+                    <td>$0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="4">Sub Total</td>
+                    <td>$0.00</td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="payment-info">
+            <h3>Payment Information:</h3>
+            <p>Bank: Name Bank</p>
+            <p>No Bank: 123-456-7890</p>
+            <p>Email: reallygreatsite.com</p>
+        </div>
+        <div class="footer">
+            <p>Samira Hadid</p>
+            <p>Manager Company</p>
+        </div>
+    </div>
+</body>
+</html>
